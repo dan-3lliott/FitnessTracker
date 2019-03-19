@@ -6,6 +6,7 @@
 package fitnesstracker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -16,15 +17,23 @@ public class FitnessTracker extends javax.swing.JFrame {
     /**
      * Creates new form FitnessTracker
      */
-    ArrayList<Day> days = new ArrayList<Day>();
+    public static ArrayList<Day> days = new ArrayList<Day>();
+    public static int currentDay = -1;
     public FitnessTracker() {
         initComponents();
         monthTable.getTableHeader().setReorderingAllowed(false);
         dayTotalTable.getTableHeader().setReorderingAllowed(false);
         dayGoalTable.getTableHeader().setReorderingAllowed(false);
-        days.add(new Day(2000, 200));
     }
-
+    
+    public void load() {
+        String[] monthName = {"January", "February",
+                "March", "April", "May", "June", "July",
+                "August", "September", "October", "November",
+                "December"};
+        Calendar cal = Calendar.getInstance();
+        dateDisplay.setText(monthName[cal.get(Calendar.MONTH)]);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -68,7 +77,6 @@ public class FitnessTracker extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         duration = new javax.swing.JTextField();
-        addMealButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         monthTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -76,18 +84,25 @@ public class FitnessTracker extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         dayGoalTable = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
-        addWorkoutButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         dayTotalTable = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        addMealButton = new javax.swing.JButton();
+        addWorkoutButton = new javax.swing.JButton();
+        updateGoals = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        beginNewDay = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        dayNum = new javax.swing.JTextField();
+        dayOfWeek = new javax.swing.JComboBox<>();
+        dateDisplay = new javax.swing.JLabel();
 
         mealWindow.setTitle("Add Meal");
         mealWindow.setAlwaysOnTop(true);
         mealWindow.setBounds(new java.awt.Rectangle(0, 0, 600, 415));
         mealWindow.setLocation(new java.awt.Point(0, 0));
-        mealWindow.setMaximumSize(new java.awt.Dimension(600, 415));
         mealWindow.setMinimumSize(new java.awt.Dimension(600, 415));
-        mealWindow.setPreferredSize(new java.awt.Dimension(600, 415));
         mealWindow.setResizable(false);
         mealWindow.setSize(new java.awt.Dimension(600, 415));
 
@@ -412,13 +427,6 @@ public class FitnessTracker extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        addMealButton.setText("ADD MEAL");
-        addMealButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addMealButtonActionPerformed(evt);
-            }
-        });
-
         monthTable.setAutoCreateRowSorter(true);
         monthTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -452,7 +460,7 @@ public class FitnessTracker extends javax.swing.JFrame {
             monthTable.getColumnModel().getColumn(6).setResizable(false);
         }
 
-        jLabel1.setText("DATE: 03/05/19");
+        jLabel1.setText("DATE:");
 
         jLabel2.setText("Monthly Calorie Totals");
 
@@ -463,7 +471,16 @@ public class FitnessTracker extends javax.swing.JFrame {
             new String [] {
                 "Calories (consumed)", "Fat (g)", "Sodium (mg)", "Cholesterol (mg)", "Sugars (g)", "Protein (g)", "Calories (burned)"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        dayGoalTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(dayGoalTable);
         if (dayGoalTable.getColumnModel().getColumnCount() > 0) {
             dayGoalTable.getColumnModel().getColumn(0).setResizable(false);
@@ -476,13 +493,6 @@ public class FitnessTracker extends javax.swing.JFrame {
         }
 
         jLabel5.setText("Daily Totals");
-
-        addWorkoutButton.setText("ADD WORKOUT");
-        addWorkoutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addWorkoutButtonActionPerformed(evt);
-            }
-        });
 
         dayTotalTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -514,63 +524,162 @@ public class FitnessTracker extends javax.swing.JFrame {
 
         jLabel6.setText("Daily Goals (editable)");
 
+        jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        addMealButton.setText("ADD MEAL");
+        addMealButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addMealButtonActionPerformed(evt);
+            }
+        });
+
+        addWorkoutButton.setText("ADD WORKOUT");
+        addWorkoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addWorkoutButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(addWorkoutButton)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(addMealButton)
+                        .addGap(19, 19, 19))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(addMealButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(addWorkoutButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        updateGoals.setText("Update Goals");
+        updateGoals.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateGoalsActionPerformed(evt);
+            }
+        });
+
+        jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        beginNewDay.setText("BEGIN NEW DAY");
+        beginNewDay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                beginNewDayActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Day:");
+
+        dayOfWeek.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }));
+        dayOfWeek.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dayOfWeekActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(beginNewDay))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dayOfWeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dayNum, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(beginNewDay)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(dayNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dayOfWeek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        dateDisplay.setText("jLabel10");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addGap(415, 415, 415))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(400, 400, 400))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
-                        .addGap(382, 382, 382))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(16, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 849, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 849, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(256, 256, 256)
+                        .addComponent(updateGoals))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGap(137, 137, 137)
-                                    .addComponent(jLabel1))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(addMealButton)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(130, 130, 130)
-                                .addComponent(addWorkoutButton)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGap(11, 11, 11)
+                                    .addComponent(jLabel1)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(dateDisplay))
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 849, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 849, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(15, 15, 15))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(addMealButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addWorkoutButton))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(dateDisplay))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(updateGoals))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -673,6 +782,30 @@ public class FitnessTracker extends javax.swing.JFrame {
         dayTotalModel.addRow(new Object[]{days.get(0).meals.get(days.get(0).meals.size() - 1).getCal(), days.get(0).meals.get(days.get(0).meals.size() - 1).getFat(), days.get(0).meals.get(days.get(0).meals.size() - 1).getSodium(), days.get(0).meals.get(days.get(0).meals.size() - 1).getChol(), days.get(0).meals.get(days.get(0).meals.size() - 1).getSugars(), days.get(0).meals.get(days.get(0).meals.size() - 1).getProtein()});     
     }//GEN-LAST:event_confirmMealActionPerformed
 
+    private void updateGoalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateGoalsActionPerformed
+        DefaultTableModel dayGoalModel = (DefaultTableModel)dayGoalTable.getModel();
+        days.get(0).setCalGoal((int)dayGoalTable.getValueAt(0, 0));
+        days.get(0).setFatGoal((int)dayGoalTable.getValueAt(0, 0));
+        days.get(0).setSodiumGoal((int)dayGoalTable.getValueAt(0, 0));
+        days.get(0).setCholesterolGoal((int)dayGoalTable.getValueAt(0, 0));
+        days.get(0).setSugarsGoal((int)dayGoalTable.getValueAt(0, 0));
+        days.get(0).setProteinGoal((int)dayGoalTable.getValueAt(0, 0));
+        days.get(0).setBurnGoal((int)dayGoalTable.getValueAt(0, 0));
+    }//GEN-LAST:event_updateGoalsActionPerformed
+
+    private void beginNewDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beginNewDayActionPerformed
+        days.add(new Day(Integer.parseInt(dayNum.getText()), dayOfWeek.getSelectedItem().toString()));
+        currentDay++;
+        dayNum.setText(null);
+        dayOfWeek.setSelectedIndex(0);
+        dateDisplay.setText()
+        System.out.println("added new day" + days.get(currentDay).getNum() + "  " + days.get(currentDay).getDayOfWeek());
+    }//GEN-LAST:event_beginNewDayActionPerformed
+
+    private void dayOfWeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dayOfWeekActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dayOfWeekActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -713,6 +846,7 @@ public class FitnessTracker extends javax.swing.JFrame {
     private javax.swing.JButton addItem;
     private javax.swing.JButton addMealButton;
     private javax.swing.JButton addWorkoutButton;
+    private javax.swing.JButton beginNewDay;
     private javax.swing.JTextField calBurned;
     private javax.swing.JLabel calLabel;
     private javax.swing.JTextField calories;
@@ -721,7 +855,10 @@ public class FitnessTracker extends javax.swing.JFrame {
     private javax.swing.JButton confirm;
     private javax.swing.JButton confirmButton;
     private javax.swing.JButton confirmMeal;
+    private javax.swing.JLabel dateDisplay;
     private javax.swing.JTable dayGoalTable;
+    private javax.swing.JTextField dayNum;
+    private javax.swing.JComboBox<String> dayOfWeek;
     private javax.swing.JTable dayTotalTable;
     private javax.swing.JTextField duration;
     private javax.swing.JTextField fat;
@@ -729,6 +866,7 @@ public class FitnessTracker extends javax.swing.JFrame {
     private javax.swing.JLabel itemNameLabel;
     private javax.swing.JDialog itemWindow;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -737,6 +875,8 @@ public class FitnessTracker extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -754,6 +894,7 @@ public class FitnessTracker extends javax.swing.JFrame {
     private javax.swing.JTextField sugars;
     private javax.swing.JLabel sugarsLabel;
     private javax.swing.JTextField title;
+    private javax.swing.JButton updateGoals;
     private javax.swing.JDialog workoutWindow;
     // End of variables declaration//GEN-END:variables
 }
